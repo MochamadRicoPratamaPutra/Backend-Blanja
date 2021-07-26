@@ -132,7 +132,7 @@ const getAllProduct = (page, limit, column, search, sortBy, keyword) => {
           }
         })
       } else {
-        connection.query('SELECT * FROM products LIMIT 5', (error, result) => {
+        connection.query('SELECT * FROM products', (error, result) => {
           if (!error) {
             resolve(result)
           } else {
@@ -145,7 +145,7 @@ const getAllProduct = (page, limit, column, search, sortBy, keyword) => {
 }
 const getProductById = (id) => {
   return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM products INNER JOIN category ON products.categoryID = category.categoryID WHERE products.categoryID = ?', id, (error, result) => {
+    connection.query('SELECT * FROM products WHERE id = ?', id, (error, result) => {
       if (!error) {
         resolve(result)
       } else {

@@ -4,10 +4,8 @@ const userController = require('../controllers/users')
 
 router
   .get('/', userController.getAllUser)
-  .post('/register', userController.insertUser)
-  .post('/login', (req, res) => {
-    res.send('ini login')
-  })
+  .post('/register', userController.register)
+  .post('/login', userController.login)
   .get('/:idsaya', userController.getUserById)
   .put('/:id', userController.updateUser)
   .delete('/:id', userController.deleteUser)

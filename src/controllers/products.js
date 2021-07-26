@@ -1,6 +1,8 @@
 const productModel = require('../models/products')
 const helpers = require('../helpers/helpers')
 const createError = require('http-errors')
+const path = require('path')
+const fs = require('fs')
 
 const getAllProduct = (req, res, next) => {
   const page = parseInt(req.query.page)
@@ -39,17 +41,22 @@ const insertProduct = (req, res, next) => {
   // const name = req.body.name
   // const price = req.body.price
   // const description =req.body.description
-  const { name, price, description, stock, imgUrl } = req.body
+  const { name, price, description, stock, imgUrl, categoryID } = req.body
   const data = {
     name: name,
     price: price,
     description: description,
     stock: stock,
-    imgUrl: imgUrl,
+    imgUrl: `${process.env.BASE_URL}/file/${req.file.filename}`,
+    categoryID: categoryID,
     createdAt: new Date()
   }
-  productModel.insertProduct(data)
+  // fs.unlinkSync(path.dirname(''))
+  console.log(path.extname(req.file.filename))
+  if (path.extname(req.file.filename) === '.jpg') {
+    productModel.insertProduct(data)
     .then(() => {
+      // console.log(res)
       helpers.response(res, data, 200)
     })
     .catch((error) => {
@@ -57,6 +64,10 @@ const insertProduct = (req, res, next) => {
       const errorMessage = new createError.InternalServerError()
       next(errorMessage)
     })
+  }else{
+    const errorMessage = new createError.UnsupportedMediaType()
+    next(errorMessage)
+  }
 }
 
 const updateProduct = (req, res, next) => {
@@ -64,17 +75,17 @@ const updateProduct = (req, res, next) => {
   // const price = req.body.price
   // const description =req.body.description
   const id = req.params.id
-  const { name, price, description, stock, imgUrl } = req.body
+  const { name, price, description, stock, imgUrl, categoryID } = req.body
   const data = {
     name: name,
     price: price,
     description: description,
     stock: stock,
     imgUrl: imgUrl,
-    // categoryID: categoryID,
+    categoryID: categoryID,
     updatedAt: new Date()
   }
-  productModel.updateProduct(id, data.next)
+  productModel.updateProduct(id, data)
     .then(() => {
       res.json({
         message: 'data berhasil di insert',

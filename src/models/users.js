@@ -187,10 +187,22 @@ const getUserById = (id) => {
     })
   })
 }
+const findUser = (email) => {
+  return new Promise((resolve, reject) => {
+    connection.query('SELECT * FROM users where email = ?', email, (error, result) => {
+      if (!error) {
+        resolve(result)
+      } else {
+        reject(error)
+      }
+    })
+  })
+}
 module.exports = {
   getAllUser,
   getUserById,
   insertUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  findUser
 }

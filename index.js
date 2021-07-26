@@ -1,14 +1,12 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
-const productRouter = require('./src/routes/products')
-const categoryRouter = require('./src/routes/category')
-const userRouter = require('./src/routes/users')
-const orderDetailRouter = require('./src/routes/orderDetail')
+const route = require('./src/routes/index')
 const port = process.env.PORT || 3500
 // const setCors = require('./src/middlewares/cors')
 const cors = require('cors')
 const createError = require('http-errors')
+
 
 // middleware
 const mymiddleware = (req, res, next) => {
@@ -19,12 +17,11 @@ const mymiddleware = (req, res, next) => {
 }
 app.use(mymiddleware)
 app.use(express.json())
+app.use('/v1', route)
+// app.use(route)
 app.use(cors())
 app.use(express.urlencoded({ extended: false }))
-app.use('/products', productRouter)
-app.use('/category', categoryRouter)
-app.use('/users', userRouter)
-app.use('/order-detail', orderDetailRouter)
+app.use('/file', express.static('./src/upload'))
 app.use('*', (req, res, next) => {
   const error = new createError.NotFound()
   next(error)

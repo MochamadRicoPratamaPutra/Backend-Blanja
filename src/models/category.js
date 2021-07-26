@@ -180,7 +180,7 @@ const deleteCategory = (id) => {
 }
 const getCategoryById = (id) => {
   return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM category where categoryID = ?', id, (error, result) => {
+    connection.query('SELECT products.id, products.name, products.price, products.imgUrl FROM `products` INNER JOIN category ON products.categoryID = category.categoryID WHERE category.categoryID = ?', id, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
