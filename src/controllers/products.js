@@ -2,8 +2,9 @@ const productModel = require('../models/products')
 const helpers = require('../helpers/helpers')
 const createError = require('http-errors')
 const path = require('path')
-const fs = require('fs')
-
+const redis = require('redis')
+const client = redis.createClient(6379);
+// const fs = require('fs')
 const getAllProduct = (req, res, next) => {
   const page = parseInt(req.query.page)
   const limit = parseInt(req.query.limit)
@@ -15,6 +16,7 @@ const getAllProduct = (req, res, next) => {
   productModel.getAllProduct(page, limit, column, search, sort, keyword)
     .then((result) => {
       const products = result
+      client.setex('allProduct', 60, JSON.stringify(products))
       helpers.response(res, products, 200)
     })
     .catch((error) => {
@@ -28,6 +30,7 @@ const getProductById = (req, res, next) => {
   productModel.getProductById(id)
     .then((result) => {
       const products = result
+      client.setex(`product/${id}`, 60, JSON.stringify(products))
       helpers.response(res, products, 200)
     })
     .catch((error) => {
@@ -41,7 +44,7 @@ const insertProduct = (req, res, next) => {
   // const name = req.body.name
   // const price = req.body.price
   // const description =req.body.description
-  const { name, price, description, stock, imgUrl, categoryID } = req.body
+  const { name, price, description, stock, categoryID } = req.body
   const data = {
     name: name,
     price: price,
@@ -55,16 +58,16 @@ const insertProduct = (req, res, next) => {
   console.log(path.extname(req.file.filename))
   if (path.extname(req.file.filename) === '.jpg') {
     productModel.insertProduct(data)
-    .then(() => {
+      .then(() => {
       // console.log(res)
-      helpers.response(res, data, 200)
-    })
-    .catch((error) => {
-      console.log(error)
-      const errorMessage = new createError.InternalServerError()
-      next(errorMessage)
-    })
-  }else{
+        helpers.response(res, data, 200)
+      })
+      .catch((error) => {
+        console.log(error)
+        const errorMessage = new createError.InternalServerError()
+        next(errorMessage)
+      })
+  } else {
     const errorMessage = new createError.UnsupportedMediaType()
     next(errorMessage)
   }
@@ -75,13 +78,13 @@ const updateProduct = (req, res, next) => {
   // const price = req.body.price
   // const description =req.body.description
   const id = req.params.id
-  const { name, price, description, stock, imgUrl, categoryID } = req.body
+  const { name, price, description, stock, categoryID } = req.body
   const data = {
     name: name,
     price: price,
     description: description,
     stock: stock,
-    imgUrl: imgUrl,
+    imgUrl: `${process.env.BASE_URL}/file/${req.file.filename}`,
     categoryID: categoryID,
     updatedAt: new Date()
   }

@@ -7,7 +7,6 @@ const port = process.env.PORT || 3500
 const cors = require('cors')
 const createError = require('http-errors')
 
-
 // middleware
 const mymiddleware = (req, res, next) => {
   console.log('My middleware dijalankan')

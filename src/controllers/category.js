@@ -59,7 +59,7 @@ const updateCategory = (req, res, next) => {
   // const price = req.body.price
   // const description =req.body.description
   const id = req.params.id
-  const { categoryID, name } = req.body
+  const { categoryID } = req.body
   const data = {
     categoryID: categoryID,
     updatedAt: new Date()
