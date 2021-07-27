@@ -38,9 +38,9 @@ const insertCategory = (req, res, next) => {
   // const name = req.body.name
   // const price = req.body.price
   // const description =req.body.description
-  const { name } = req.body
+  const { categoryID } = req.body
   const data = {
-    name: name,
+    categoryID: categoryID,
     createdAt: new Date()
   }
   categoryModel.insertCategory(data)
@@ -62,7 +62,6 @@ const updateCategory = (req, res, next) => {
   const { categoryID, name } = req.body
   const data = {
     categoryID: categoryID,
-    name: name,
     updatedAt: new Date()
   }
   categoryModel.updateCategory(id, data)

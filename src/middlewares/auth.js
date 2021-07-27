@@ -24,9 +24,8 @@ const verifyAccess = (req, res, next)=>{
         error.status = 401
         return next(error)
       }
-     
     }
-   req.role = decoded.role
+    req.role = decoded.role
     next()
   });
 } 

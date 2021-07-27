@@ -76,7 +76,7 @@ const updateUser = (req, res, next) => {
     password: password,
     phoneNumber: phoneNumber,
     gender: gender,
-    modifiedAt: new Date()
+    createdAt: new Date()
   }
   userModel.updateUser(id, data)
     .then(() => {
@@ -129,7 +129,8 @@ const register = async (req, res, next) => {
         email: email,
         password: hash,
         phoneNumber: phoneNumber,
-        gender: gender
+        gender: gender,
+        createdAt: new Date()
       }
       userModel.insertUser(data)
         .then((result) => {
@@ -149,11 +150,12 @@ const login = async (req, res, next)=>{
   const user = result[0]
   console.log(user);
   bcrypt.compare(password, user.password, function (err, resCompare) {
+    // console.log(resCompare)
     if (!resCompare){
       return helpers.response(res, null, 401, { message: 'password wrong' })
     }
     // generate token
-    jwt.sign({ email: user.email, role: '1' }, process.env.SECRET_KEY , { expiresIn: '24h'  }, function (err, token) {
+    jwt.sign({ email: user.email, role: '1' }, process.env.SECRET_KEY , { expiresIn: 60*60  }, function (err, token) {
       console.log(token);
       console.log(process.env.SECRET_KEY);
       delete user.password
