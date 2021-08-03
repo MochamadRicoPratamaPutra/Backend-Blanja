@@ -26,6 +26,7 @@ const verifyAccess = (req, res, next) => {
       }
     }
     req.role = decoded.role
+    req.id = decoded.id
     next()
   })
 }

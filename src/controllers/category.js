@@ -43,15 +43,21 @@ const insertCategory = (req, res, next) => {
     categoryID: categoryID,
     createdAt: new Date()
   }
-  categoryModel.insertCategory(data)
-    .then(() => {
-      helpers.response(res, data, 200)
-    })
-    .catch((error) => {
-      console.log(error)
-      const errorMessage = new createError.InternalServerError()
-      next(errorMessage)
-    })
+  const userRole = req.role
+  if (userRole === 'admin') {
+    categoryModel.insertCategory(data)
+      .then(() => {
+        helpers.response(res, data, 200)
+      })
+      .catch((error) => {
+        console.log(error)
+        const errorMessage = new createError.InternalServerError()
+        next(errorMessage)
+      })
+  } else {
+    const errorMessage = new createError.Forbidden()
+    next(errorMessage)
+  }
 }
 
 const updateCategory = (req, res, next) => {
@@ -64,34 +70,40 @@ const updateCategory = (req, res, next) => {
     categoryID: categoryID,
     updatedAt: new Date()
   }
-  categoryModel.updateCategory(id, data)
-    .then(() => {
-      res.json({
-        message: 'data berhasil di insert',
-        data: data
+  const userRole = req.role
+  if (userRole === 'admin') {
+    categoryModel.updateCategory(id, data)
+      .then(() => {
+        res.json({
+          message: 'data berhasil di update',
+          data: data
+        })
       })
-    })
-    .catch((error) => {
-      console.log(error)
-      const errorMessage = new createError.InternalServerError()
-      next(errorMessage)
-    })
+      .catch((error) => {
+        console.log(error)
+        const errorMessage = new createError.InternalServerError()
+        next(errorMessage)
+      })
+  }
 }
 
 const deleteCategory = (req, res, next) => {
   const id = req.params.id
-  categoryModel.deleteCategory(id)
-    .then(() => {
-      res.status(200)
-      res.json({
-        message: 'data berhasil di hapus'
+  const userRole = req.role
+  if (userRole === 'admin') {
+    categoryModel.deleteCategory(id)
+      .then(() => {
+        res.status(200)
+        res.json({
+          message: 'data berhasil di hapus'
+        })
       })
-    })
-    .catch((err) => {
-      console.log(err)
-      const errorMessage = new createError.InternalServerError()
-      next(errorMessage)
-    })
+      .catch((err) => {
+        console.log(err)
+        const errorMessage = new createError.InternalServerError()
+        next(errorMessage)
+      })
+  }
 }
 module.exports = {
   getAllCategory,

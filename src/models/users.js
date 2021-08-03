@@ -164,6 +164,17 @@ const updateUser = (id, data) => {
     })
   })
 }
+const updateUserByEmail = (id, data) => {
+  return new Promise((resolve, reject) => {
+    connection.query('UPDATE users SET ? WHERE email = ?', [data, id], (error, result) => {
+      if (!error) {
+        resolve(result)
+      } else {
+        reject(error)
+      }
+    })
+  })
+}
 
 const deleteUser = (id) => {
   return new Promise((resolve, reject) => {
@@ -187,9 +198,21 @@ const getUserById = (id) => {
     })
   })
 }
+
 const findUser = (email) => {
   return new Promise((resolve, reject) => {
     connection.query('SELECT * FROM users where email = ?', email, (error, result) => {
+      if (!error) {
+        resolve(result)
+      } else {
+        reject(error)
+      }
+    })
+  })
+}
+const verification = (id) =>{
+  return new Promise((resolve, reject) => {
+    connection.query('UPDATE users SET status=1 WHERE id = ?', id, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
@@ -204,5 +227,7 @@ module.exports = {
   insertUser,
   updateUser,
   deleteUser,
-  findUser
+  findUser,
+  updateUserByEmail,
+  verification
 }

@@ -3,7 +3,7 @@ const helpers = require('../helpers/helpers')
 const createError = require('http-errors')
 const path = require('path')
 const redis = require('redis')
-const client = redis.createClient(6379);
+const client = redis.createClient(6379)
 // const fs = require('fs')
 const getAllProduct = (req, res, next) => {
   const page = parseInt(req.query.page)
@@ -44,31 +44,38 @@ const insertProduct = (req, res, next) => {
   // const name = req.body.name
   // const price = req.body.price
   // const description =req.body.description
-  const { name, price, description, stock, categoryID } = req.body
-  const data = {
-    name: name,
-    price: price,
-    description: description,
-    stock: stock,
-    imgUrl: `${process.env.BASE_URL}/file/${req.file.filename}`,
-    categoryID: categoryID,
-    createdAt: new Date()
-  }
-  // fs.unlinkSync(path.dirname(''))
-  console.log(path.extname(req.file.filename))
-  if (path.extname(req.file.filename) === '.jpg') {
-    productModel.insertProduct(data)
-      .then(() => {
-      // console.log(res)
-        helpers.response(res, data, 200)
-      })
-      .catch((error) => {
-        console.log(error)
-        const errorMessage = new createError.InternalServerError()
-        next(errorMessage)
-      })
+  const userRole = req.role
+  console.log(userRole)
+  if ((userRole === 'admin') || (userRole === 'seller')) {
+    const { name, price, description, stock, categoryID } = req.body
+    const data = {
+      name: name,
+      price: price,
+      description: description,
+      stock: stock,
+      imgUrl: `${process.env.BASE_URL}/file/${req.file.filename}`,
+      categoryID: categoryID,
+      createdAt: new Date()
+    }
+    // fs.unlinkSync(path.dirname(''))
+    console.log(path.extname(req.file.filename))
+    if (path.extname(req.file.filename) === '.jpg') {
+      productModel.insertProduct(data)
+        .then(() => {
+        // console.log(res)
+          helpers.response(res, data, 200)
+        })
+        .catch((error) => {
+          console.log(error)
+          const errorMessage = new createError.InternalServerError()
+          next(errorMessage)
+        })
+    } else {
+      const errorMessage = new createError.UnsupportedMediaType()
+      next(errorMessage)
+    }
   } else {
-    const errorMessage = new createError.UnsupportedMediaType()
+    const errorMessage = new createError.Forbidden()
     next(errorMessage)
   }
 }
@@ -88,34 +95,51 @@ const updateProduct = (req, res, next) => {
     categoryID: categoryID,
     updatedAt: new Date()
   }
-  productModel.updateProduct(id, data)
-    .then(() => {
-      res.json({
-        message: 'data berhasil di insert',
-        data: data
-      })
-    })
-    .catch((error) => {
-      console.log(error)
-      const errorMessage = new createError.InternalServerError()
+  if (path.extname(req.file.filename) === '.jpg') {
+    const userRole = req.role
+    if ((userRole === 'admin') || (userRole === 'seller')) {
+      productModel.updateProduct(id, data)
+        .then(() => {
+          res.json({
+            message: 'data berhasil di insert',
+            data: data
+          })
+        })
+        .catch((error) => {
+          console.log(error)
+          const errorMessage = new createError.InternalServerError()
+          next(errorMessage)
+        })
+    } else {
+      const errorMessage = new createError.Forbidden()
       next(errorMessage)
-    })
+    }
+  } else {
+    const errorMessage = new createError.UnsupportedMediaType()
+    next(errorMessage)
+  }
 }
 
 const deleteProduct = (req, res, next) => {
   const id = req.params.id
-  productModel.deleteProduct(id)
-    .then(() => {
-      res.status(200)
-      res.json({
-        message: 'data berhasil di hapus'
+  const userRole = req.role
+  if ((userRole === 'admin') || (userRole === 'seller')) {
+    productModel.deleteProduct(id)
+      .then(() => {
+        res.status(200)
+        res.json({
+          message: 'data berhasil di hapus'
+        })
       })
-    })
-    .catch((err) => {
-      console.log(err)
-      const errorMessage = new createError.InternalServerError()
-      next(errorMessage)
-    })
+      .catch((err) => {
+        console.log(err)
+        const errorMessage = new createError.InternalServerError()
+        next(errorMessage)
+      })
+  } else {
+    const errorMessage = new createError.Forbidden()
+    next(errorMessage)
+  }
 }
 
 module.exports = {

@@ -15,10 +15,11 @@ const mymiddleware = (req, res, next) => {
   next()
 }
 app.use(mymiddleware)
+app.use(cors())
+// app.use(setCors)
 app.use(express.json())
 app.use('/v1', route)
 // app.use(route)
-app.use(cors())
 app.use(express.urlencoded({ extended: false }))
 app.use('/file', express.static('./src/upload'))
 app.use('*', (req, res, next) => {
