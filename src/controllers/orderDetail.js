@@ -1,7 +1,6 @@
 const orderDetailModel = require('../models/order_detail')
 const helpers = require('../helpers/helpers')
-const createError = require('http-errors')
-
+const { v4: uuidv4 } = require('uuid')
 const getAllOrderDetail = (req, res, next) => {
   const page = parseInt(req.query.page)
   const limit = parseInt(req.query.limit)
@@ -38,13 +37,14 @@ const insertOrderDetail = (req, res, next) => {
   // const name = req.body.name
   // const price = req.body.price
   // const description =req.body.description
-  const { total } = req.body
+  const { total, userID } = req.body
   const data = {
     total: total,
+    userID: userID,
     createdAt: new Date()
   }
   orderDetailModel.insertOrderDetail(data)
-    .then(() => {
+    .then((result) => {
       helpers.response(res, data, 200)
     })
     .catch((error) => {

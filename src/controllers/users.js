@@ -76,36 +76,31 @@ const updateUser = (req, res, next) => {
   const userRole = req.role
   const userId = req.id
   const { name, email, password, phoneNumber, gender } = req.body
-  if (userRole === 'customer') {
+  if (userRole === 'customer' || userRole === 'seller') {
     if (id === userId) {
       bcrypt.genSalt(10, function (err, salt) {
         bcrypt.hash(password, salt, function (err, hash) {
           const data = {
             name: name,
             email: email,
-            password: hash,
+            // password: hash,
             phoneNumber: phoneNumber,
             gender: gender,
             profilePicture: `${process.env.BASE_URL}/file/${req.file.filename}`,
             updatedAt: new Date()
           }
-          if (path.extname(req.file.filename) === '.jpg') {
-            userModel.updateUser(id, data)
-              .then(() => {
-                res.json({
-                  message: 'data successfuly updated',
-                  data: data
-                })
+          userModel.updateUser(id, data)
+            .then(() => {
+              res.json({
+                message: 'data successfuly updated',
+                data: data
               })
-              .catch((error) => {
-                console.log(error)
-                const errorMessage = new createError.InternalServerError()
-                next(errorMessage)
-              })
-          } else {
-            const errorMessage = new createError.UnsupportedMediaType()
-            next(errorMessage)
-          }
+            })
+            .catch((error) => {
+              console.log(error)
+              const errorMessage = new createError.InternalServerError()
+              next(errorMessage)
+            })
         })
       })
     } else {

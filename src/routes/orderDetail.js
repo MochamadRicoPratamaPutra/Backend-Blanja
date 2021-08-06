@@ -1,10 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const orderDetailController = require('../controllers/orderDetail')
+const auth = require('../middlewares/auth')
 router
-  .get('/', orderDetailController.getAllOrderDetail)
-  .get('/:idsaya', orderDetailController.getOrderDetailById)
-  .post('/', orderDetailController.insertOrderDetail)
-  .put('/:id', orderDetailController.updateOrderDetail)
-  .delete('/:id', orderDetailController.deleteOrderDetail)
+  .get('/', auth.verifyAccess, orderDetailController.getAllOrderDetail)
+  .get('/:idsaya', auth.verifyAccess, orderDetailController.getOrderDetailById)
+  .post('/', auth.verifyAccess, orderDetailController.insertOrderDetail)
+  .put('/:id', auth.verifyAccess, orderDetailController.updateOrderDetail)
+  .delete('/:id', auth.verifyAccess, orderDetailController.deleteOrderDetail)
 module.exports = router

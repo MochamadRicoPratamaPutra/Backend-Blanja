@@ -1,34 +1,41 @@
 const connection = require('../controllers/db')
 
-const getAllProduct = (page, limit, column, search, sortBy, keyword) => {
+const getAllProduct = (page, limit, column, search, sort, keyword) => {
   return new Promise((resolve, reject) => {
-    if (column !== undefined && sortBy !== undefined && keyword !== undefined && search !== undefined) {
+    if (column !== undefined && sort !== undefined && keyword !== undefined && search !== undefined) {
       if (Number.isNaN(page) === false && Number.isNaN(limit) === false) {
         const startIndex = (page - 1) * limit
         const endIndex = page * limit
         const paginatingResult = {}
-        connection.query(`SELECT * FROM products WHERE ${search} LIKE '%${keyword}%' AND (id >= ${startIndex}) ORDER BY ${column} ${sortBy} LIMIT ${limit};`, (error, result) => {
+        connection.query(`SELECT * FROM products WHERE ${search} LIKE '%${keyword}%' ORDER BY ${column} ${sort} LIMIT ${limit} OFFSET ${startIndex};`, (error, result) => {
           if (!error) {
-            if (endIndex < result.length) {
-              paginatingResult.next = {
-                page: page + 1,
-                limit: limit
+            connection.query('SELECT COUNT(*) AS count FROM products', (errorCount, resultCount) => {
+              if (!errorCount) {
+                console.log(resultCount[0].count)
+                if (endIndex < resultCount[0].count) {
+                  paginatingResult.next = {
+                    page: page + 1,
+                    limit: limit
+                  }
+                }
+                if (startIndex > 0) {
+                  paginatingResult.previous = {
+                    page: page - 1,
+                    limit: limit
+                  }
+                }
+                paginatingResult.result = result
+                resolve(paginatingResult)
+              } else {
+                reject(errorCount)
               }
-            }
-            if (startIndex > 0) {
-              paginatingResult.previous = {
-                page: page - 1,
-                limit: limit
-              }
-            }
-            paginatingResult.result = result
-            resolve(paginatingResult)
+            })
           } else {
             reject(error)
           }
         })
       } else {
-        connection.query(`SELECT * FROM products ORDER BY ${column} ${sortBy}`, (error, result) => {
+        connection.query(`SELECT * FROM products ORDER BY ${column} ${sort}`, (error, result) => {
           if (!error) {
             resolve(result)
           } else {
@@ -36,33 +43,40 @@ const getAllProduct = (page, limit, column, search, sortBy, keyword) => {
           }
         })
       }
-    } else if (column !== undefined && sortBy !== undefined) {
+    } else if (column !== undefined && sort !== undefined) {
       if (Number.isNaN(page) === false && Number.isNaN(limit) === false) {
         const startIndex = (page - 1) * limit
         const endIndex = page * limit
         const paginatingResult = {}
-        connection.query(`SELECT * FROM products WHERE id >= ${startIndex} ORDER BY ${column} ${sortBy} LIMIT ${limit}`, (error, result) => {
+        connection.query(`SELECT * FROM products ORDER BY ${column} ${sort} LIMIT ${limit} OFFSET ${startIndex}`, (error, result) => {
           if (!error) {
-            if (endIndex < result.length) {
-              paginatingResult.next = {
-                page: page + 1,
-                limit: limit
+            connection.query('SELECT COUNT(*) AS count FROM products', (errorCount, resultCount) => {
+              if (!errorCount) {
+                console.log(resultCount[0].count)
+                if (endIndex < resultCount[0].count) {
+                  paginatingResult.next = {
+                    page: page + 1,
+                    limit: limit
+                  }
+                }
+                if (startIndex > 0) {
+                  paginatingResult.previous = {
+                    page: page - 1,
+                    limit: limit
+                  }
+                }
+                paginatingResult.result = result
+                resolve(paginatingResult)
+              } else {
+                reject(errorCount)
               }
-            }
-            if (startIndex > 0) {
-              paginatingResult.previous = {
-                page: page - 1,
-                limit: limit
-              }
-            }
-            paginatingResult.result = result
-            resolve(paginatingResult)
+            })
           } else {
             reject(error)
           }
         })
       } else {
-        connection.query(`SELECT * FROM products ORDER BY ${column} ${sortBy}`, (error, result) => {
+        connection.query(`SELECT * FROM products ORDER BY ${column} ${sort}`, (error, result) => {
           if (!error) {
             resolve(result)
           } else {
@@ -75,22 +89,29 @@ const getAllProduct = (page, limit, column, search, sortBy, keyword) => {
         const startIndex = (page - 1) * limit
         const endIndex = page * limit
         const paginatingResult = {}
-        connection.query(`SELECT * FROM products WHERE ${search} LIKE '%${keyword}%' AND (id >= ${startIndex}) LIMIT ${limit}`, (error, result) => {
+        connection.query(`SELECT * FROM products WHERE ${search} LIKE '%${keyword}%' LIMIT ${limit} OFFSET ${startIndex}`, (error, result) => {
           if (!error) {
-            if (endIndex < result.length) {
-              paginatingResult.next = {
-                page: page + 1,
-                limit: limit
+            connection.query('SELECT COUNT(*) AS count FROM products', (errorCount, resultCount) => {
+              if (!errorCount) {
+                console.log(resultCount[0].count)
+                if (endIndex < resultCount[0].count) {
+                  paginatingResult.next = {
+                    page: page + 1,
+                    limit: limit
+                  }
+                }
+                if (startIndex > 0) {
+                  paginatingResult.previous = {
+                    page: page - 1,
+                    limit: limit
+                  }
+                }
+                paginatingResult.result = result
+                resolve(paginatingResult)
+              } else {
+                reject(errorCount)
               }
-            }
-            if (startIndex > 0) {
-              paginatingResult.previous = {
-                page: page - 1,
-                limit: limit
-              }
-            }
-            paginatingResult.result = result
-            resolve(paginatingResult)
+            })
           } else {
             reject(error)
           }
@@ -109,24 +130,29 @@ const getAllProduct = (page, limit, column, search, sortBy, keyword) => {
         const startIndex = (page - 1) * limit
         const endIndex = page * limit
         const paginatingResult = {}
-        connection.query(`SELECT * FROM products WHERE id >= ${startIndex} LIMIT ${limit}`, (error, result) => {
+        connection.query(`SELECT * FROM products LIMIT ${limit} OFFSET ${startIndex}`, (error, result) => {
           if (!error) {
-            const jsonLength = result
-            console.log(jsonLength.length)
-            if (endIndex < Object.keys(result).length) {
-              paginatingResult.next = {
-                page: page + 1,
-                limit: limit
+            connection.query('SELECT COUNT(*) AS count FROM products', (errorCount, resultCount) => {
+              if (!errorCount) {
+                console.log(resultCount[0].count)
+                if (endIndex < resultCount[0].count) {
+                  paginatingResult.next = {
+                    page: page + 1,
+                    limit: limit
+                  }
+                }
+                if (startIndex > 0) {
+                  paginatingResult.previous = {
+                    page: page - 1,
+                    limit: limit
+                  }
+                }
+                paginatingResult.result = result
+                resolve(paginatingResult)
+              } else {
+                reject(errorCount)
               }
-            }
-            if (startIndex > 0) {
-              paginatingResult.previous = {
-                page: page - 1,
-                limit: limit
-              }
-            }
-            paginatingResult.result = result
-            resolve(paginatingResult)
+            })
           } else {
             reject(error)
           }

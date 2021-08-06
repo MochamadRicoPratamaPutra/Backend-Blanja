@@ -2,8 +2,8 @@ const productModel = require('../models/products')
 const helpers = require('../helpers/helpers')
 const createError = require('http-errors')
 const path = require('path')
-const redis = require('redis')
-const client = redis.createClient(6379)
+// const redis = require('redis')
+// const client = redis.createClient(6379)
 // const fs = require('fs')
 const getAllProduct = (req, res, next) => {
   const page = parseInt(req.query.page)
@@ -16,7 +16,7 @@ const getAllProduct = (req, res, next) => {
   productModel.getAllProduct(page, limit, column, search, sort, keyword)
     .then((result) => {
       const products = result
-      client.setex('allProduct', 60, JSON.stringify(products))
+      // client.setex('allProduct', 60, JSON.stringify(products))
       helpers.response(res, products, 200)
     })
     .catch((error) => {
@@ -30,7 +30,7 @@ const getProductById = (req, res, next) => {
   productModel.getProductById(id)
     .then((result) => {
       const products = result
-      client.setex(`product/${id}`, 60, JSON.stringify(products))
+      // client.setex(`product/${id}`, 60, JSON.stringify(products))
       helpers.response(res, products, 200)
     })
     .catch((error) => {
@@ -58,22 +58,16 @@ const insertProduct = (req, res, next) => {
       createdAt: new Date()
     }
     // fs.unlinkSync(path.dirname(''))
-    console.log(path.extname(req.file.filename))
-    if (path.extname(req.file.filename) === '.jpg') {
-      productModel.insertProduct(data)
-        .then(() => {
-        // console.log(res)
-          helpers.response(res, data, 200)
-        })
-        .catch((error) => {
-          console.log(error)
-          const errorMessage = new createError.InternalServerError()
-          next(errorMessage)
-        })
-    } else {
-      const errorMessage = new createError.UnsupportedMediaType()
-      next(errorMessage)
-    }
+    productModel.insertProduct(data)
+      .then(() => {
+      // console.log(res)
+        helpers.response(res, data, 200)
+      })
+      .catch((error) => {
+        console.log(error)
+        const errorMessage = new createError.InternalServerError()
+        next(errorMessage)
+      })
   } else {
     const errorMessage = new createError.Forbidden()
     next(errorMessage)
@@ -95,27 +89,22 @@ const updateProduct = (req, res, next) => {
     categoryID: categoryID,
     updatedAt: new Date()
   }
-  if (path.extname(req.file.filename) === '.jpg') {
-    const userRole = req.role
-    if ((userRole === 'admin') || (userRole === 'seller')) {
-      productModel.updateProduct(id, data)
-        .then(() => {
-          res.json({
-            message: 'data berhasil di insert',
-            data: data
-          })
+  const userRole = req.role
+  if ((userRole === 'admin') || (userRole === 'seller')) {
+    productModel.updateProduct(id, data)
+      .then(() => {
+        res.json({
+          message: 'data berhasil di insert',
+          data: data
         })
-        .catch((error) => {
-          console.log(error)
-          const errorMessage = new createError.InternalServerError()
-          next(errorMessage)
-        })
-    } else {
-      const errorMessage = new createError.Forbidden()
-      next(errorMessage)
-    }
+      })
+      .catch((error) => {
+        console.log(error)
+        const errorMessage = new createError.InternalServerError()
+        next(errorMessage)
+      })
   } else {
-    const errorMessage = new createError.UnsupportedMediaType()
+    const errorMessage = new createError.Forbidden()
     next(errorMessage)
   }
 }

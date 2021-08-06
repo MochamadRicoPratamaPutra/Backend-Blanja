@@ -4,9 +4,13 @@ const productRouter = require('./products')
 const categoryRouter = require('./category')
 const userRouter = require('./users')
 const orderDetailRouter = require('./orderDetail')
+const orderItemsRouter = require('./orderItem')
+const addressRouter = require('./address')
 route
   .use('/products', productRouter)
   .use('/category', categoryRouter)
   .use('/users', userRouter)
   .use('/order-detail', orderDetailRouter)
+  .use('/order-items', orderItemsRouter)
+  .use('/address', addressRouter)
 module.exports = route

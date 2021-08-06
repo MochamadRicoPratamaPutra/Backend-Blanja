@@ -13,7 +13,7 @@ function main ( email) {
         subject: 'Confirmation to change your password',
         html: `<h style:'margin-left:auto; margin-right:auto'>Click button below to change your password</h>
         <button style:'margin-left:auto; margin-right:auto;outline:none;border-radius:3px; background: red;padding: 5px 10px'>
-        <a href='http://localhost:3000/reset-password/${email}'>Click here to confirm your account!</a>
+        <a href='http://localhost:3000/new-password/${email}'>Click here to confirm your account!</a>
         </button>`
     })
     .then((res) => {
