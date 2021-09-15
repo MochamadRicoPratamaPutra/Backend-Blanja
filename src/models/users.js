@@ -210,7 +210,7 @@ const findUser = (email) => {
     })
   })
 }
-const verification = (id) =>{
+const verification = (id) => {
   return new Promise((resolve, reject) => {
     connection.query('UPDATE users SET status=1 WHERE id = ?', id, (error, result) => {
       if (!error) {

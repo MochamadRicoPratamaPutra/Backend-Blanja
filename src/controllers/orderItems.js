@@ -38,11 +38,12 @@ const insertOrderItems = (req, res, next) => {
   // const name = req.body.name
   // const price = req.body.price
   // const description =req.body.description
-  const { user_id, quantity, products_id } = req.body
+  const { userID, quantity, productsID, orderID } = req.body
   const data = {
-    user_id: user_id,
-    products_id: products_id,
+    userID: userID,
+    productsID: productsID,
     quantity: quantity,
+    orderID: orderID,
     createdAt: new Date()
   }
   orderItemsModel.insertOrderItems(data)

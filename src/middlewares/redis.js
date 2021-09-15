@@ -4,8 +4,10 @@ const helpers = require('../helpers/helpers')
 
 const hitCacheAllProduct = (req, res, next) => {
   client.get('allProduct', function (err, data) {
-  // reply is null when the key is missing
-    if (data !== null) {
+    // reply is null when the key is missing
+    if (err) {
+      helpers.response(res, null, 500, { message: err })
+    } else if (data !== null) {
       const result = JSON.parse(data)
       return helpers.response(res, result, 200)
     } else {
@@ -16,8 +18,10 @@ const hitCacheAllProduct = (req, res, next) => {
 const hitCacheProductId = (req, res, next) => {
   const id = req.params.idsaya
   client.get(`product/${id}`, function (err, data) {
-  // reply is null when the key is missing
-    if (data !== null) {
+    // reply is null when the key is missing
+    if (err) {
+      helpers.response(res, null, 500, { message: err })
+    } else if (data !== null) {
       const result = JSON.parse(data)
       console.log('data cache di hit')
       return helpers.response(res, result, 200)
