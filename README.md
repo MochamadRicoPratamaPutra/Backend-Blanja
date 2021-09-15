@@ -1,26 +1,46 @@
-# RESTful API Blanja! v1
-This is a repository for my project at Arkademy Fullstack Web Developer Bootcamp. In this project i created a RESTful API and backend for the e-commerce site that i slice and make.
-## Instruction
-Each table have its own method to use. In this section i will describe what methods can be used on each table.
+<h1 align="center">ExpressJS - #backend-Blanja RESTfull API</h1>
 
-### Method
-Method that can be use is listed here
-    1. GET
-    2. POST
-    3. PUT
-    4. DELETE
-    
-For GET method, you can use pagination, searching keyword, sorting based on which column you choose from the database.  To use pagination, you can apply value to **limit** and **page** key, for searching you can apply value to **search** and **keyword** key, for sorting you can apply value to **column** and **sort** key. You can see key name, what kind of value to use, and description each key in table below.
-|Key |Value|Description|
-|----------------|-------------------------------|-----------------------------|
-|page|`Number`| Which page you want to see |
-|limit|`Number`|How much item you want to see|
-|search|`String`|Which category you want to see|
-|keyword|`String`|What keyword you want to search|
-|sort|`ASC/DESC`|What kind of sorting you want to use, you can use ASC value for **ascending** and DESC for **descending**|
-|column|`String`|which column you want to sort, i.e. name, price, etc.|
+Blanja is a e-commerce site connecting seller and customer. As a seller, you can sell any item that you want to sell, and as a customer you can buy anything you want!
 
-### Login and Register
-You need to login to use method (except GET Product) in this site. If you didnt have account, you can register. Registering already use **hashing bcrypt** for password hashing. If you already have an acc, you can login. Everytime you login, a token is generate using **JSON Web Token** that can be use for 24 hour.
-### Redis
-For caching, i already used redis to test.
+## Built With
+
+[![Express.js](https://img.shields.io/badge/Express.js-4.x-orange.svg?style=rounded-square)](https://expressjs.com/en/starter/installing.html)
+[![Node.js](https://img.shields.io/badge/Node.js-v.12.13-green.svg?style=rounded-square)](https://nodejs.org/)
+
+## Requirements
+
+1. <a href="https://nodejs.org/en/download/">Node Js</a>
+2. Node_modules
+3. <a href="https://www.getpostman.com/">Postman</a>
+4. Web Server (ex. localhost)
+
+## How to run the app ?
+
+1. Open app's directory in CMD or Terminal
+2. Type `npm install`
+3. Make new file a called **.env**, set up first [here](#set-up-env-file)
+4. Turn on Web Server and MySQL can using Third-party tool like xampp, etc.
+5. Create a database with the name #nama_database, and Import file sql to **phpmyadmin**
+6. Open Postman desktop application or Chrome web app extension that has installed before
+7. Choose HTTP Method and enter request url.(ex. localhost:3000/)
+8. You can see all the end point [here](https://documenter.getpostman.com/view/9852901/TzJoEfvL)
+
+## Set up .env file
+
+Open .env file on your favorite code editor, and copy paste this code below :
+
+    DB_HOST
+    DB_USER
+    DB_NAME
+    DB_PASS
+    DB_PORT
+    BASE_URL
+    PORT
+    TARGET_URL
+    SECRET_KEY
+    EMAIL_MAILER
+    EMAIL_PASSWORD
+
+## Contact
+
+My Email : mricopratamaputra@gmail.com
