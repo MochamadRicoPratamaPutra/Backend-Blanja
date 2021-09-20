@@ -180,7 +180,7 @@ const deleteOrderDetail = (id) => {
 }
 const getOrderDetailById = (id) => {
   return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM order_detail INNER JOIN users ON order_detail.userId = users.id where users.id = ?', id, (error, result) => {
+    connection.query('SELECT * FROM order_detail where userID = ?', id, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
