@@ -169,11 +169,10 @@ const deleteOrderItems = (id) => {
 const getOrderItemsById = (id) => {
   return new Promise((resolve, reject) => {
     connection.query(
-            `SELECT order_items.id, order_detail.id, order_items.user_id, products.name, products.price FROM order_items 
-            INNER JOIN users ON order_items.user_id = users.id 
-            INNER JOIN order_detail ON order_items.order_id = order_detail.id
-            INNER JOIN products ON order_items.products_id = products.id
-            where order_items.user_id = "${id}"`, (error, result) => {
+            `SELECT order_detail.id, products.name, products.price, products.imgUrl, order_items.quantity FROM order_items 
+            INNER JOIN order_detail ON order_items.orderID = order_detail.id
+            INNER JOIN products ON order_items.productsID = products.id
+            where order_items.orderID = '${id}'`, (error, result) => {
               if (!error) {
                 resolve(result)
               } else {
