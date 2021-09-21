@@ -1,6 +1,7 @@
 const productModel = require('../models/products')
 const helpers = require('../helpers/helpers')
 const createError = require('http-errors')
+const cloudinary = require('../middlewares/cloudinary');
 // const path = require('path')
 // const redis = require('redis')
 // const client = redis.createClient(6379)
