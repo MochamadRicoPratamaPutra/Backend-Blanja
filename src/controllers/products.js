@@ -40,7 +40,7 @@ const getProductById = (req, res, next) => {
     })
 }
 
-const insertProduct = (req, res, next) => {
+const insertProduct = async (req, res, next) => {
   // const name = req.body.name
   // const price = req.body.price
   // const description =req.body.description
@@ -81,7 +81,7 @@ const insertProduct = (req, res, next) => {
   }
 }
 
-const updateProduct = (req, res, next) => {
+const updateProduct = async (req, res, next) => {
   // const name = req.body.name
   // const price = req.body.price
   // const description =req.body.description

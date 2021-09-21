@@ -50,7 +50,7 @@ const getUserById = (req, res, next) => {
     });
 };
 
-const updateUser = (req, res, next) => {
+const updateUser = async (req, res, next) => {
   const id = req.params.id;
   const userRole = req.role;
   const userId = req.id;
