@@ -57,6 +57,13 @@ const insertProduct = (req, res, next) => {
       categoryID: categoryID,
       createdAt: new Date()
     }
+    if (req.file) {
+      data.imgUrl = req.file;
+      const uploader = async (path) => await cloudinary.uploads(path, 'Blanja');
+      const { path } = data.imgUrl;
+      const newPath = await uploader(path);
+      data.imgUrl = newPath.url;
+    }
     // fs.unlinkSync(path.dirname(''))
     productModel.insertProduct(data)
       .then(() => {
@@ -85,9 +92,16 @@ const updateProduct = (req, res, next) => {
     price: price,
     description: description,
     stock: stock,
-    imgUrl: `${process.env.BASE_URL}/file/${req.file.filename}`,
+    // imgUrl: `${process.env.BASE_URL}/file/${req.file.filename}`,
     categoryID: categoryID,
     updatedAt: new Date()
+  }
+  if (req.file) {
+    data.imgUrl = req.file;
+    const uploader = async (path) => await cloudinary.uploads(path, 'Blanja');
+    const { path } = data.imgUrl;
+    const newPath = await uploader(path);
+    data.imgUrl = newPath.url;
   }
   const userRole = req.role
   if ((userRole === 'admin') || (userRole === 'seller')) {
